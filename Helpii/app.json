@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "reactNative",
+    "slug": "reactNative",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/helpii_logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/helpii_photo.png",
+      "resizeMode": "container",
+      "backgroundColor": "#0047AB"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/helpii_photo.png",
+        "backgroundColor": "#0047AB"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Não foi permitido"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": false
+          }
+        }
+      ],
+      "expo-font"
+    ]
+  }
+}
