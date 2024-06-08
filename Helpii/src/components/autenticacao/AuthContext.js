@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const AuthContext = createContext();
 
 export function obterUrlBase() {
-  return "https://e2e2-201-86-41-92.ngrok-free.app";
+  return "https://d337-2804-1b0-1903-763c-fde4-58fc-6200-8307.ngrok-free.app";
 }
 
 export const AuthProvider = ({ children }) => {
@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Erro ao salvar o token:", error);
     }
   };
-
 
   const signOut = async () => {
     try {
