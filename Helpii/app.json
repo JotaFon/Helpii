@@ -15,33 +15,53 @@
       "**/*"
     ],
     "ios": {
+      "adaptiveIcon":{
+        "foregroundImage": "./assets/helpii_photo.png",
+        "backgroundColor": "#0047AB"
+      },
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/helpii_photo.png",
         "backgroundColor": "#0047AB"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyATFvzOf9qmFXktt-NCOSyThDTpYejxiio"
+        }
+      },
+      "web": {
+        "favicon": "./assets/favicon.png"
+      },
+      "plugins": [
+        [
+          "expo-image-picker",
+          {
+            "photosPermission": "Não foi permitido"
+          }
+        ],
+        [
+          "expo-build-properties",
+          {
+            "android": {
+              "usesCleartextTraffic": false
+            }
+          }
+        ],
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permitir que o aplicativo acesse sua localização enquanto estiver em uso?",
+          "locationAlwaysPermission": "Permitir que o aplicativo acesse sua localização enquanto estiver em segundo plano?",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false
+        },
+        "expo-font"
+      ]
     },
     "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Não foi permitido"
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "usesCleartextTraffic": false
-          }
-        }
-      ],
-      "expo-font"
+      "expo-build-properties"
     ]
   }
 }

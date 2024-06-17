@@ -14,7 +14,7 @@ import CreateDescScreen from "./screens/CreateDescScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LocationScreen from "./screens/LocationScreen";
-import TesteMaps from "./screens/TesteMaps";
+import MapsScreen from "./screens/MapsScreen";
 import { AuthContext } from "../autenticacao/AuthContext";
 
 //Screen names
@@ -28,7 +28,7 @@ const infoName = "Info";
 const registerName = "Register";
 const locationName = "Location";
 export const loginName = "Login";
-const testeMaps = "TesteMaps";
+const mapsScreen = "MapsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -55,6 +55,10 @@ function TabNavigator({ navigation }) {
             iconColor = focused ? "#6a99f7" : "#000";
           } else if (rn === userName) {
             iconName = focused ? "person" : "person-outline";
+            iconColor = focused ? "#6a99f7" : "#000";
+          }
+          else if (rn === mapsScreen) {
+            iconName = focused ? "globe" : "globe-outline";
             iconColor = focused ? "#6a99f7" : "#000";
           }
 
@@ -103,7 +107,7 @@ function TabNavigator({ navigation }) {
       <Tab.Screen name={homeName} component={HomeScreen} />
       <Tab.Screen name={createName} component={CreateButtonScreen} />
       <Tab.Screen name={userName} component={UserScreen} />
-      <Tab.Screen name={testeMaps} component={TesteMaps} />
+      <Tab.Screen name={mapsScreen} component={MapsScreen} />
       <Tab.Screen
         name={donateName}
         component={DonateScreen}
