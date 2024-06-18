@@ -1,4 +1,4 @@
-import { StyleSheet, View, SafeAreaView, PROVIDER_GOOGLE } from "react-native";
+import { StyleSheet, View, PROVIDER_GOOGLE } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import {
   requestForegroundPermissionsAsync,
@@ -6,12 +6,13 @@ import {
   watchPositionAsync,
   LocationAccuracy,
 } from "expo-location";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Polyline, Marker } from "react-native-maps";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function MapsScreen() {
   const [location, setLocation] = useState(null);
   const [marker, setMarker] = useState([]);
+  const [polyline, setPolyline] = useState([]);
 
   const mapRef = useRef(null);
 
@@ -23,6 +24,24 @@ export default function MapsScreen() {
       setLocation(currentPosition);
       console.log("LOC ATUAL => ", currentPosition);
     }
+  }
+
+  const handlePolyline = () => {
+    const coordinates = marker.map((m) => {
+      return {
+        latitude: m.latitude,
+        longitude: m.longitude,
+      };
+    });
+
+    mapRef.current.fitToCoordinates(coordinates, {
+      edgePadding: {
+        top: 50,
+        right: 50,
+        bottom: 50,
+        left: 50,
+      },
+    });
   }
 
   const handleNewMarker = (coordinate) => {
@@ -66,7 +85,7 @@ export default function MapsScreen() {
               longitudeDelta: 0.005,
             }}
           >
-            {marker.length > 0 && (
+            {marker.length > 1 && (
               marker.map((m) => {
                 return(
                   <Marker
@@ -75,7 +94,10 @@ export default function MapsScreen() {
                       latitude: m.latitude,
                       longitude: m.longitude,
                     }}
-                  />)
+                    showCallout
+                    tappable={true}
+                  />
+                )
               })
             )}
           </MapView>

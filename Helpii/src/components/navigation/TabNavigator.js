@@ -28,7 +28,7 @@ const infoName = "Info";
 const registerName = "Register";
 const locationName = "Location";
 export const loginName = "Login";
-const mapsScreen = "MapsScreen";
+const maps = "Maps";
 
 const Tab = createBottomTabNavigator();
 
@@ -57,7 +57,7 @@ function TabNavigator({ navigation }) {
             iconName = focused ? "person" : "person-outline";
             iconColor = focused ? "#6a99f7" : "#000";
           }
-          else if (rn === mapsScreen) {
+          else if (rn === maps) {
             iconName = focused ? "globe" : "globe-outline";
             iconColor = focused ? "#6a99f7" : "#000";
           }
@@ -107,7 +107,7 @@ function TabNavigator({ navigation }) {
       <Tab.Screen name={homeName} component={HomeScreen} />
       <Tab.Screen name={createName} component={CreateButtonScreen} />
       <Tab.Screen name={userName} component={UserScreen} />
-      <Tab.Screen name={mapsScreen} component={MapsScreen} />
+      <Tab.Screen name={maps} component={MapsScreen} />
       <Tab.Screen
         name={donateName}
         component={DonateScreen}
