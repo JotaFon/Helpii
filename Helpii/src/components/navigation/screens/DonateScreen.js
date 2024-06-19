@@ -13,6 +13,30 @@ const locations = [
   },
 ];
 
+const deleteDoacao = async () => {
+  try {
+    const url = `${obterUrlBase()}/api/doacao/${route.params.location.id}`;
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+    });
+
+    if (response.ok) {
+      await AsyncStorage.removeItem("userToken", token);
+      navigation.navigate("Home")
+    } else {
+      console.log("Status: ", response.status)
+    }
+
+  } catch (error) {
+    console.error("Erro ao deletar doação:", error.message);
+  }
+}
+
 const LocationCard = ({ location, navigation }) => {
   return (
     <View style={styles.card}>
@@ -25,9 +49,10 @@ const LocationCard = ({ location, navigation }) => {
         <Image source={location.image} style={styles.locationImage} />
       )}
       <Text style={styles.locationDescription}>{location.description}</Text>
+      <TouchableOpacity style={styles.button} onPress={deleteDoacao} />
     </View>
-  );
-};
+  )
+}
 
 export const DonateScreen = ({ navigation }) => {
   return (
@@ -80,7 +105,7 @@ export const DetailsScreen = ({ route }) => {
     };
     fetchUserData();
   }, []);
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{route.params.location.title}</Text>
