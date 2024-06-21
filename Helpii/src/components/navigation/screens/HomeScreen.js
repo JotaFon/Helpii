@@ -49,7 +49,6 @@ export default function HomeScreen({ navigation }) {
         }
 
         const data = await response.json();
-        console.log(data)
         setDoacaoData(data);
       } catch {
         console.error("Erro ao obter as doações:", error.message);
