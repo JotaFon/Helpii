@@ -36,7 +36,7 @@ function TabNavigator({ navigation }) {
 
   return (
     <Tab.Navigator
-      initialRouteName={homeName}
+      initialRouteName={infoName}
       screenOptions={({ route }) => ({
         headerTransparent: true,
         headerShown: false,
