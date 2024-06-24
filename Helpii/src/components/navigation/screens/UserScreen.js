@@ -7,6 +7,7 @@ import { textStyles } from "../../Fonts";
 import coracao from "../../../../assets/Coracao.png";
 import rosto from "../../../../assets/Rosto.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const UserScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -23,23 +24,23 @@ const UserScreen = ({ route }) => {
     const fetchUserData = async () => {
       try {
         const token = await AsyncStorage.getItem('userToken');
-        console.log(token)
-        const url = `${obterUrlBase()}/autenticacao/authenticated`
-        const response = await fetch(
-          url, {
+        console.log(token);
+        const url = `${obterUrlBase()}/autenticacao/authenticated`;
+        const response = await fetch(url, {
           method: "GET",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json;charset=UTF-8",
             "Authorization": `Bearer ${token}`
           },
-        }
-        );
+        });
+
         if (!response.ok) {
           throw new Error(
             `Erro na solicitação: ${response.status} - ${response.statusText}`
           );
         }
+
         const data = await response.json();
         setUserData(data);
       } catch (error) {
@@ -47,7 +48,7 @@ const UserScreen = ({ route }) => {
       }
     };
     fetchUserData();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     getImageFromParams();
@@ -56,8 +57,18 @@ const UserScreen = ({ route }) => {
   const getImageFromParams = () => {
     const { selectedImage } = route.params || {};
     if (selectedImage) {
-      setImage(selectedImage);
+      resizeImage(selectedImage);
     }
+  };
+
+  const resizeImage = (imageUri) => {
+    ImageResizer.createResizedImage(imageUri, 300, 300, 'PNG', 100)
+      .then((response) => {
+        setImage(response.uri);
+      })
+      .catch((err) => {
+        console.error("Erro ao redimensionar a imagem:", err);
+      });
   };
 
   const irParaInfo = () => {
@@ -84,7 +95,7 @@ const UserScreen = ({ route }) => {
       const userId = await AsyncStorage.getItem("userId");
       const token = await AsyncStorage.getItem("userToken");
       const url = `${obterUrlBase()}/api/user/${userId}`;
-      
+
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
@@ -92,7 +103,7 @@ const UserScreen = ({ route }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.ok) {
         await AsyncStorage.removeItem("userToken");
         navigation.navigate("Login");
@@ -112,7 +123,7 @@ const UserScreen = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
         {image ? (
-          <Image source={{ uri: `data:image/png;base64,${image}` }} style={styles.avatarFoto} />
+          <Image source={{ uri: image }} style={styles.avatarFoto} />
         ) : (
           <Image
             source={{

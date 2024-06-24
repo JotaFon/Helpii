@@ -5,13 +5,13 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { textStyles } from "../../Fonts";
 import { obterUrlBase } from "../../autenticacao/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ImageResizer from 'react-native-image-resizer';
 
 const Info = () => {
   const FotoPerfilURL =
@@ -24,24 +24,23 @@ const Info = () => {
     id: 0,
     nome: "",
     telefone: "",
+    arquivo: {},
   });
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = await AsyncStorage.getItem('userToken');
-        console.log(token)
-        const url = `${obterUrlBase()}/autenticacao/authenticated`
-        const response = await fetch(
-          url, {
+        const token = await AsyncStorage.getItem("userToken");
+        console.log(token);
+        const url = `${obterUrlBase()}/autenticacao/authenticated`;
+        const response = await fetch(url, {
           method: "GET",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json;charset=UTF-8",
-            "Authorization": `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
-        }
-        );
+        });
         if (!response.ok) {
           throw new Error(
             `Erro na solicitação: ${response.status} - ${response.statusText}`
@@ -49,6 +48,11 @@ const Info = () => {
         }
         const data = await response.json();
         setUserData(data);
+
+        if (data.arquivo && Object.keys(data.arquivo).length > 0) {
+          const profileImage = data.arquivo.content;
+          setImage(profileImage);
+        }
       } catch (error) {
         console.error("Erro ao obter dados do usuário:", error.message);
       }
@@ -57,7 +61,7 @@ const Info = () => {
   }, []);
 
   const VoltaUser = () => {
-    navigation.navigate("User")
+    navigation.navigate("User");
   };
 
   const handleImagePicker = async () => {
@@ -68,53 +72,57 @@ const Info = () => {
         base64: true,
         quality: 1,
       });
-  
+
       if (!result.canceled) {
-        let selectedImage;
-  
-        if (result.uri) {
-          selectedImage = result.uri;
-        } else {
-          selectedImage = result.assets[0].uri;
-        }
-  
-        const resizedImage = await ImageResizer.createResizedImage(selectedImage, 800, 800, 'JPEG', 80);
-  
-        const finalImage = resizedImage.uri || selectedImage;
-  
-        navigation.navigate("User", { selectedImage: finalImage });
-        setImage(finalImage);
-  
-        const token = await AsyncStorage.getItem('userToken');
-        const userId = await AsyncStorage.getItem('userId');
+        const selectedImage = result.uri || result.assets[0].uri;
+        setImage(selectedImage);
+
+        const token = await AsyncStorage.getItem("userToken");
+        const userId = await AsyncStorage.getItem("userId");
         const url = `${obterUrlBase()}/api/user/atualizar-file/${userId}`;
-  
-        const fileData = {
-          file: finalImage,
-        };
-  
-        console.log(fileData);
-  
+
+        const formData = new FormData();
+        formData.append("file", {
+          uri: selectedImage,
+          name: "profile.jpg",
+          type: "image/jpeg",
+        });
+
+        console.log("FormData:", formData);
+
         const response = await fetch(url, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(fileData),
+          body: formData,
         });
-  
+
         if (!response.ok) {
+          const responseBody = await response.text();
+          console.error("Erro na solicitação:", response.status, response.statusText);
+          console.error("Resposta do servidor:", responseBody);
           throw new Error(
             `Erro na solicitação: ${response.status} - ${response.statusText}`
           );
         }
+
+        const data = await response.json();
+
+        if (data.arquivo && Object.keys(data.arquivo).length > 0) {
+          const profileImage = data.arquivo.content;
+          setImage(profileImage);
+        }
+
+        console.log("Imagem enviada com sucesso.");
+        navigation.navigate("User", { selectedImage: profileImage });
       }
     } catch (error) {
       console.error("Erro ao escolher imagem:", error.message);
+      Alert.alert("Erro", "Erro ao escolher imagem. Tente novamente.");
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -123,14 +131,11 @@ const Info = () => {
       </TouchableOpacity>
       <View style={styles.content}>
         {image ? (
-          <Image
-            source={{ uri: `data:image/png;base64,${image}` }}
-            style={styles.Foto}
-          />
+          <Image source={{ uri: image }} style={styles.Foto} />
         ) : (
           <Image
             source={{
-              uri: "https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg",
+              uri: FotoPerfilURL,
             }}
             style={styles.Foto}
           />
